@@ -34,5 +34,24 @@ case when P is null then 'Root'
      when (select count(*) from BST a where a.P = b.N) > 0 then 'Inner'
      else 'leaf' end
 from BST b
-order by N
+order by N;
+
+
+
+-- New Companies
+
+select a.company_code, a.founder,
+    (select count(distinct lead_manager_code) from Lead_Manager where company_code = a.company_code),
+    (select count(distinct senior_manager_code) from Senior_Manager where company_code = a.company_code),
+    (select count(distinct manager_code) from Manager where company_code = a.company_code),
+    (select count(distinct employee_code) from Employee where company_code = a.company_code)
+from Company a
+order by a.company_code;
+
+
+
+-- The Blunder
+
+select ceil(avg(Salary) - avg(replace(Salary, '0', '')))  -- use ceil to up to the next integer
+from EMPLOYEES
 
