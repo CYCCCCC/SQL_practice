@@ -53,5 +53,43 @@ order by a.company_code;
 -- The Blunder
 
 select ceil(avg(Salary) - avg(replace(Salary, '0', '')))  -- use ceil to up to the next integer
-from EMPLOYEES
+from EMPLOYEES;
 
+
+
+-- Top Earners
+
+select max(salary * months), count(*)
+from Employee
+where (salary * months) = (select max(salary * months) 
+                           from Employee);
+
+
+
+
+-- Weather Observation Station 2
+
+select round(sum(LAT_N), 2), round(sum(LONG_W), 2)
+from STATION;
+
+
+
+-- Weather Observation Station 15
+
+select round(LONG_W, 4)
+from STATION
+where LAT_N = (select max(LAT_N) from STATION
+               where LAT_N < 137.2345);
+
+
+
+-- Weather Observation Station 18
+
+select round((max(LAT_N) - min(LAT_N)) + (max(LONG_W) - min(LONG_W)), 4)
+from STATION;
+
+
+-- Weather Observation Station 19
+
+round(sqrt(power(max(LAT_N) - min(LAT_N), 2) + power(max(LONG_W) - min(LONG_W), 2)), 4)
+from STATION;
