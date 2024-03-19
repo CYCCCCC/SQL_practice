@@ -93,3 +93,13 @@ from STATION;
 
 round(sqrt(power(max(LAT_N) - min(LAT_N), 2) + power(max(LONG_W) - min(LONG_W), 2)), 4)
 from STATION;
+
+
+-- Weather Observation Station 20
+
+select round(LAT_N, 4)
+from STATION a
+where (select count(LAT_N) from STATION b where a.LAT_N > b.LAT_N) 
+= (select count(LAT_N) from STATION b where a.LAT_N < b.LAT_N);
+
+
