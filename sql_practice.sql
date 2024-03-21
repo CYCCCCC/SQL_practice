@@ -103,3 +103,40 @@ where (select count(LAT_N) from STATION b where a.LAT_N > b.LAT_N)
 = (select count(LAT_N) from STATION b where a.LAT_N < b.LAT_N);
 
 
+
+
+-- SQL Project Planning
+
+select Start_Date, min(End_Date)
+from 
+(select Start_Date from Projects where Start_Date not in (select End_Date from Projects)) a
+inner join
+(select End_Date from Projects where End_Date not in (select Start_Date from Projects)) b
+where Start_Date < End_Date
+group by Start_Date
+order by min(End_Date) - Start_Date, Start_Date;
+
+
+
+-- Placements
+
+select a.Name
+from Students a
+left join Friends b on a.ID = b.ID
+left join Packages c on a.ID = c.ID
+left join Packages d on b.Friend_ID = d.ID
+where c.Salary < d.Salary
+order by d.Salary;
+
+
+
+-- Symmetric Pairs
+
+select a.X, a.Y
+from Functions a
+inner join Functions b on a.X = b.Y and a.Y = b.X
+group by a.X, a.Y
+having count(*) > 1 or a.X < a.Y   -- count(*)>1 to filter the case X = Y
+order by a.X;
+
+
