@@ -140,3 +140,24 @@ having count(*) > 1 or a.X < a.Y   -- count(*)>1 to filter the case X = Y
 order by a.X;
 
 
+
+-- The Report
+
+select (case when Grade < 8 then NULL else Name end) as Name, Grade, Marks
+from Students, Grades
+where Marks between Min_Mark and Max_Mark
+order by Grade desc, (case when Grade >= 8 then Name else Marks end);
+
+
+
+-- Top Competitors
+
+select d.hacker_id, d.name
+from Submissions a
+left join Challenges b on a.challenge_id = b.challenge_id
+left join Difficulty c on b.difficulty_level = c.difficulty_level
+left join Hackers d on a.hacker_id = d.hacker_id
+where a.score = c.score
+group by d.hacker_id, d.name
+having count(distinct a.challenge_id) > 1
+order by count(distinct a.challenge_id) desc, d.hacker_id;
