@@ -161,3 +161,20 @@ where a.score = c.score
 group by d.hacker_id, d.name
 having count(distinct a.challenge_id) > 1
 order by count(distinct a.challenge_id) desc, d.hacker_id;
+
+
+
+-- Ollivander's Inventory
+
+select b.id, c.age, a.coins_needed, a.power
+from 
+(select code, power, min(coins_needed) as coins_needed 
+ from Wands
+ group by code, power) a
+inner join Wands b on a.code = b.code and a.power = b.power and a.coins_needed = b.coins_needed
+inner join (select code, age from Wands_Property where is_evil = 0) c on a.code = c.code
+order by a.power desc, c.age desc;
+
+
+
+
