@@ -177,4 +177,39 @@ order by a.power desc, c.age desc;
 
 
 
+-- Challenges
+
+select a.hacker_id, a.name, count(distinct challenge_id) as challenges_created
+from Hackers a
+inner join Challenges b on a.hacker_id = b.hacker_id
+group by a.hacker_id, a.name
+having 
+-- the number of challenges = max
+challenges_created = (select max(cnt) 
+                      from (select hacker_id, count(*) cnt from Challenges group by hacker_id) a)
+or
+-- the number of challenges is unique
+challenges_created in (select cnt
+                       from (select hacker_id, count(*) cnt from Challenges group by hacker_id) a
+                       group by cnt
+                       having count(cnt) = 1)
+order by challenges_created desc, a.hacker_id;
+
+
+
+-- Contest Leaderboard
+
+select a.hacker_id, b.name, sum(score) as total_score
+from(
+    select hacker_id, challenge_id, max(score) as score
+    from Submissions
+    where score != 0
+    group by hacker_id, challenge_id
+) a
+left join Hackers b on a.hacker_id = b.hacker_id
+group by a.hacker_id, b.name
+order by total_score desc, a.hacker_id;
+
+
+
 
