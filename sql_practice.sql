@@ -211,5 +211,26 @@ group by a.hacker_id, b.name
 order by total_score desc, a.hacker_id;
 
 
+-- Interviews
 
+select a.contest_id, c.hacker_id, c.name,
+sum(case when total_submissions is null then 0 else total_submissions end) as sum_submissions,
+sum(case when total_accepted_submissions is null then 0 else total_accepted_submissions end) as sum_accepted_submissions,
+sum(case when total_views is null then 0 else total_views end) as sum_views,
+sum(case when total_unique_views is null then 0 else total_unique_views end) as sum_unique_views
+from Colleges a
+left join Challenges b on a.college_id = b.college_id
+left join Contests c on a.contest_id = c.contest_id
+left join (select challenge_id, sum(total_views) as total_views, sum(total_unique_views) as total_unique_views
+           from View_Stats
+           group by challenge_id) d on b.challenge_id = d.challenge_id
+left join (select challenge_id, sum(total_submissions) as total_submissions, sum(total_accepted_submissions) as total_accepted_submissions
+           from Submission_Stats
+           group by challenge_id) e on b.challenge_id = e.challenge_id
+group by a.contest_id, c.hacker_id, c.name
+having sum_views > 0 or
+sum_unique_views > 0 or
+sum_submissions > 0 or
+sum_accepted_submissions > 0 
+order by a.contest_id
 
