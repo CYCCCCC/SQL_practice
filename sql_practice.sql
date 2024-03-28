@@ -232,5 +232,26 @@ having sum_views > 0 or
 sum_unique_views > 0 or
 sum_submissions > 0 or
 sum_accepted_submissions > 0 
-order by a.contest_id
+order by a.contest_id;
+
+
+-- 15 Days of Learning SQL
+
+select a.submission_date, a.daily_cnt, a.hacker_id, b.name
+from (
+    select hacker_id, submission_date, daily_cnt,
+           rank() over(partition by submission_date order by daily_cnt desc, hacker_id asc) as ranking
+    from (
+        select hacker_id, submission_date, count(*) as daily_cnt
+        from Submissions
+        where hacker_id in (select hacker_id
+                            from Submissions
+                            group by hacker_id
+                            having count(distinct submission_date) = 15)
+        group by hacker_id, submission_date
+    ) a
+) a
+left join Hackers b on a.hacker_id = b.hacker_id
+where ranking = 1
+order by a.submission_date;
 
